@@ -1,0 +1,330 @@
+//////////////////-----------12.13.2018 LIVE CODING-----------//////////////////////
+
+//HEY EVERYONE1
+//HOY ESTA TO PREPARAO
+
+s.boot;
+s.scope;
+
+////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////SINTE 1 - PEIXERA///////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////
+
+//slow tempo 4 sec/note
+(
+Ndef(\ambient,{
+	arg freq=59, mix=0.8, room=1, damp=0.1, amp=1, lpf=100 ;
+	var sig, env,fq;
+	fq=EnvGen.ar(Env([69,67,64,69],[4,4,4],curve:'hold'),Impulse.ar(1/12));
+	sig=SinOsc.ar(fq.midicps)*LFPulse.ar(1/4,0,0.5);
+	sig=LPF.ar(sig,lpf);
+	sig=FreeVerb.ar(sig,mix,room,damp);
+	Out.ar([0,1],sig*amp);
+}).add
+)
+
+Ndef(\ambient).fadeTime=20;
+Ndef(\ambient).set(\lpf,10000); //1000>>10000>100>>10000
+Ndef(\ambient).set(\damp,1)//0.1>>1>>0.01>0.1
+Ndef(\ambient).set(\room,1)//1>>0.1>>0.01>>1
+
+Ndef(\ambient).set(\amp,0.2)
+
+
+Ndef(\ambient).clear;
+
+
+
+
+/////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////SINTE 2 - PERCUSIO///////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////
+
+(
+Ndef(\perc,{
+	arg amp=0.1;
+	var sig;
+	sig=SinOsc.ar(220,0,Pulse.ar(1,0.5,0.05)*amp);
+	sig=CombC.ar(sig,0.2,0.8,SinOsc.ar(0.1,-pi/2,MouseX.kr(1,20,'exponential'),MouseY.kr(1,20,'exponential')));
+	sig=Limiter.ar(sig,1);
+	Out.ar([0,1],sig);
+}).play;
+)
+
+Ndef(\perc).fadeTime=20;
+Ndef(\perc).set(\amp,1) //(0.1>>1>>0)
+Ndef(\perc).clear();
+
+
+
+////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////SINTE 3 - AGUT BASE///////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////
+//!!!Do not play for a while. Line.kr has no doneAction:2 cause then CombN is not working...
+(
+SynthDef(\baseAgut,{
+	arg freq=300, rel=0.2, amp=1;
+	var sig,env;
+	sig=SinOsc.ar(freq,0,0.5);
+	sig=sig*Line.kr(1,0,rel);
+	sig=CombN.ar(sig,0.2,0.2,2);
+	Out.ar(0,sig*amp);
+}).add;
+)
+
+
+(
+Tdef(\agutlent,{
+	var freq=[69,67,64];
+	var rel=[0.2,0.2,0.4];
+	var gap=[1,1,2];
+	var i=0;
+	inf.do{
+		3.do{
+			Synth(\baseAgut).set(\freq,freq[i].midicps,\rel,rel[i]);
+			gap[i].wait;
+			i=i+1;
+		};
+		i=0;
+}}).fork;
+)
+
+Synth(\baseAgut).set(\amp,0.1);
+
+
+Tdef(\agutlent).clear
+
+
+
+
+///////////////////////////////////////////////////////////////////////////////////
+////////////////////////////SINTE 4 - MELODIA /////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////
+
+(
+SynthDef(\agutperc,{
+	arg freq=1000, rel=0.1;
+	var sig,env;
+	sig=SinOsc.ar(freq,0,0.6);
+	env=EnvGen.ar(Env([0,1,0],[0.001,rel]),doneAction:2);
+	sig=sig*env;
+	sig=Limiter.ar(sig,1);
+	Out.ar(1,sig);
+}).add
+)
+
+
+//Execute just once
+(
+p=Pbind(
+	\instrument,\agutperc,
+	\freq, Pseq([69,69,67,71,0].midicps,inf), //freq
+	\rel, 0.1,
+	\dur, Pseq([1/8,1/8,1/4,1/4,1/4].scramble,inf) //event time
+).play;
+)
+
+
+//STREAMING>>
+
+//temps1
+(
+p.stream = Pbind(
+	\instrument, \agutperc,
+	\freq, Pseq([69,69,67,71,0].swap(1,4).midicps,inf),
+	\rel, 0.1,//change progresively 0.1 >> 2
+	\dur, Pseq([1/8,1/8,1/4,1/4,1/4].scramble,inf)
+).asStream;
+)
+
+//temps2
+(
+p.stream = Pbind(
+	\instrument, \agutperc,
+	\freq, Pseq([65,64,62,69,0].midicps.scramble,inf),//usar scramble!
+	\dur, Pseq([1/8,1/8,1/4,1/4,1/4].scramble,inf)
+).asStream;
+)
+//temps3
+(
+p.stream = Pbind(
+	\instrument, \agutperc,
+	\freq, Pseq([69,69,67,71,0,65,64,62,69,0].mirror1.midicps,inf),
+	\dur, Pseq([1/8,1/8,1/4,1/4,1/4,1/8,1/8,1/8,1/4,1/4].scramble,inf)
+).asStream;
+)
+//temps4
+(
+p.stream = Pbind(
+	\instrument, \agutperc,
+	\freq, Pseq([69,69,0, 57,0, 65,64].mirror1.midicps,inf),
+	\dur, Pseq(4*[1/12,1/12,1/6, 1/6,1/6, 1/6,1/6,],inf)
+).asStream;
+)
+
+//temps 5
+(
+var f1, f2, freq;
+
+f1=[71,67,65,64].scramble;
+f1.postln;
+
+f2=[71,69,65,64].permute(3);
+f2.postln;
+
+freq=f1.addAll(f2);
+
+p.stream = Pbind(
+	\instrument, \agutperc,
+	\freq, Pseq(freq.midicps,inf),
+	//\rel, Pseq([0.25,0.25,0.25,0.25,0.25/2,0.25/2,0.25,0.25]*2,inf),
+	\dur, Pseq([0.25,0.25,0.25,0.25,0.25/2,0.25/2,0.25,0.25],inf)
+).asStream;
+)
+
+//END
+p.mute //keeps playing but not sounding
+p.unmute //resume
+p.reset //reset from beguining
+p.pause //pauses the playing
+p.play //plays back
+p.stop //stops sequence. will reset before resume
+p.play
+
+//USEFUL ARRAY METHODS
+a=[1,2,3,4]
+a.scramble
+a.rotate(2)
+a.reverse
+a.swap(0,3)
+a.mirror
+a.mirror1
+a.mirror2
+a.stutter(2)
+a.sputter(0.3,10)//(prob to repeat, max out array lenght)
+a.permute(1)//permuta els n primers valors
+a.wrapExtend(5)//loop extend (size)
+a.foldExtend(6)//mirror extend (size)
+a.clipExtend(6)//repeteix lultim valor fins arribar a size
+
+
+
+/////////////////////////////////////////////////////////////////////////////////////
+///////////////////////// SINTE 5 - NOISE ///////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////
+
+
+//Noise
+(
+Ndef(\gra,{
+	arg freq=400, events=100, amp=0.5;
+	var sig;
+	sig=Resonz.ar(SinOsc.ar*Dust.ar(events),freq,1,amp);
+	Limiter.ar(sig,3);
+	Out.ar([0,1],sig);
+}).play;
+)
+
+
+Ndef(\gra).set(\freq,400); //400>>100>>10000>>400 (Seq)
+Ndef(\gra).set(\events,400); //100>>400>>1000
+
+//AMP
+Ndef(\gra).set(\amp,3)
+
+//END
+Ndef(\gra).clear
+
+
+
+/////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////SINTE 6 - OCELLS//////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////
+
+(
+SynthDef(\ocell,{
+	arg amp=1, pan=0, freq=1000;
+	var sig, env;
+	sig=SinOsc.ar((freq+EnvGen.ar(Env([0,10000,0],[0.001,1]))),0,0.1)*EnvGen.ar(Env([0,1,0],[0.001,1]),doneAction:2);
+	Out.ar(0,Pan2.ar(sig*amp,pan));
+}).add;
+)
+
+
+////////Execute just once
+(
+z=Pbind(
+	\instrument,\ocell,
+	\freq, Pseq(Array.rand(1000,2000,3000),inf),
+	\pan, Pseq(Array.rand(100,-1,1),inf),
+	//\pan, {inf.do{[-1,1].choose}}.fork,
+	\amp, 3,
+	\dur, Pseq(Array.rand(1000,1,2),inf)
+).play;
+)
+
+
+//STREAMING>>
+(
+z.stream=Pbind(
+	\instrument,\ocell,
+	\freq, Pseq(Array.rand(100,2000,3000),inf),//(1-100 rand, 100-3000 freq, 3000-20000 FREQ)
+	\pan, Pseq(Array.rand(100,-1,1),inf),
+	\amp, 3, //1-3
+	\dur, Pseq(Array.rand(100,0.01,0.4),inf)//(1-100 rand, 0.01-1temps, 0.01-2TEMPS)
+).asStream;
+)
+
+
+
+///////STOP
+
+z.mute //keeps playing but not sounding
+z.unmute //resume
+z.reset //reset from beguining
+z.pause //pauses the playing
+z.play //plays back
+z.stop //stops sequence. will reset before resume
+
+
+
+/////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////// SINTE 7 - BELL ////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////
+
+(
+SynthDef(\bell,{
+	arg freq=400;
+	var sig, env;
+	sig={Mix(SinOsc.ar(freq*[0.5,1,1.19,1.56,2,2.51,2.66,3.01,4.1],0,0.1*[0.25,1,0.8,0.5,0.9,0.4,0.3,0.6,0.1]))};
+	env=EnvGen.ar(Env([0,1,0],[0.01,5],-3),doneAction:2);
+	Out.ar([0,1],sig*env);
+}).play;
+)
+
+//Execute just once
+(
+y=Pbind(
+	\instrument, \bell,
+	\freq, Pseq(Array.rand(4,63,76).midicps,inf),
+	\dur, Pseq(3*[1,1,1],inf)
+).play;
+)
+
+
+//Streaming
+(
+y.stream=Pbind(
+	\instrument, \bell,
+	\freq, Pseq(Array.rand(5,63,76).mirror1.midicps,inf),//(100 completely random,63,76)// (2,// .mirror1
+	\dur, Pseq(3*[1,1,1],inf) //change tempo 3* >>2* >> (0.3* max)
+	//\dur, Pseq(Array.rand(5,0.5,1),inf) //random time intervals
+).asStream;
+)
+
+//stop
+y.stop
+
+
+
+//MUXAS GRAZIAS!! I BON NADAL!
