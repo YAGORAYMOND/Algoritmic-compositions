@@ -1,0 +1,59 @@
+
+     /////
+        //
+      ///
+        //
+    /////
+
+
+
+
+//divisor
+
+Ndef(\a).fadeTime = 10;
+Ndef(\a).play;
+Ndef(\a).clear(5);
+
+
+(
+var t=100;
+Ndef(\a,
+{LPF.ar(
+Mix([
+VarSaw.ar(round(LFNoise0.kr(0.5).range(100,200),t)*[1,1.01],rand(0,1),MouseY.kr(0,0.5),0.03),
+VarSaw.ar(round(LFNoise0.kr(1).range(100,400),t),rand(0,1),MouseY.kr(0,0.5),0.03),
+VarSaw.ar(round(LFNoise0.kr(2).range(100,400),t),rand(0,1),MouseY.kr(0,0.5),0.00),
+VarSaw.ar(round(LFNoise0.kr(4).range(100,600),t),rand(0,1),MouseY.kr(0,0.5),0.03)
+])!2, MouseY.kr(500,15000)+LFNoise0.kr(4).range(500,1000) )};//rang 500 15000
+)
+)
+
+//jugar a pujar el rang de divisio 1,2,4,8,16.
+//Jugar a pujar o baixar el rang de freq 100-10000
+//Cambiar els volums relatius
+//Jugar amb MouseX i Y
+
+
+
+
+
+
+
+//Baseline
+
+Ndef(\iter).play;
+Ndef(\iter).fadeTime=5;
+
+(
+Ndef(\iter,{
+var temp,sum;
+sum=0;
+10.do{
+temp=VarSaw.ar({EnvGen.kr(Env.circle( Array.fill(14,{([40,60,80,120]*1).choose }),[8]!15,\step))}*{Rand(0.99,1.02)}!2,0,0.3);//*1 //120 opcional// PHASE 0.3 / 0.05 / SinOsc.kr(0.1).range(0.05,0.3) / Line.kr(0.5,0.0,100)
+sum=sum+temp;
+};
+sum=sum*0.1;//amp
+});
+)
+
+Ndef(\iter).clear(30);
