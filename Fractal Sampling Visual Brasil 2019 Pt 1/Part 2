@@ -1,0 +1,190 @@
+
+
+     /////
+    //   //
+       //
+     //
+    //////
+
+
+
+//CONTROL
+//snare>>        ~sn_pi           Tsn
+//hhc>>          ~hhc_pi          Thhc
+//kick>>         ~kick_pi         Tkick
+//eoe>>          ~eoe_pi          Teoe
+//caixa>>        ~caixa_pi        Tcaixa
+//caixaxina>>    ~caixaxina_pi    Tcaixaxina
+//clap>>         ~clap_pi         Tclap
+//cymatics>>     ~cymatics_pi     Tcymatics
+//hho>>          ~hho             Thho
+
+
+
+//EXECUCIO
+
+//#1 tempo lent amb 2 perc
+(
+var p1,p2,p3,p4;
+//beat duration 1 2 4 8
+~dur=2;
+//sequence duration 1 2 4 8 (larger than beat duration)
+~t=4;
+//pattern
+~pat=[1,1,1,2, 1,1,3,3, 2,2,1,2, 3,4,3,3, 2,2,4,4, 3,4,4,4];
+//p1
+~kick_p1=0; ~caixaxina_p1=0;
+//p2
+~kick_p2=0.1; ~caixaxina_p2=0.7;
+//p3
+~kick_p3=0.6; ~caixaxina_p3=0.3;
+//p4
+~kick_p4=0.5; ~caixaxina_p4=0.7;
+//
+Tdef(\Tkick).play;
+Tdef(\Tcaixaxina).play;
+)
+
+//#2 tempo lent afegint el hhc
+(
+var p1,p2,p3,p4;
+//beat duration 1 2 4 8
+~dur=2;
+//sequence duration 1 2 4 8 (larger than beat duration)
+~t=2;
+//pattern
+~pat=[1,1,1,2, 1,1,3,3, 2,2,1,2, 3,4,3,3, 2,2,4,4, 3,4,4,4];
+//p1
+~kick_p1=0; ~caixaxina_p1=0; ~hhc_p1=0.1;
+//p2
+~kick_p2=0.1; ~caixaxina_p2=0.7; ~hhc_p2=0.3;
+//p3
+~kick_p3=0.3; ~caixaxina_p3=0.3; ~hhc_p2=0.4;
+//p4
+~kick_p4=0.5; ~caixaxina_p4=0.7;  ~hhc_p2=0.6;
+//
+Tdef(\Tkick).play;
+Tdef(\Tcaixaxina).play;
+Tdef(\Thhc).play;
+)
+
+
+
+//#3 tempo lent afegint el hhc
+(
+//pattern
+~pat=[1,1,1,2, 1,1,3,3, 2,2,1,2, 3,4,3,3, 2,2,4,4, 3,4,4,4];
+//p1
+~kick_p1=0.4; ~caixaxina_p1=0.7; ~hhc_p1=0.8;
+//p2
+~kick_p2=0.1; ~caixaxina_p2=0.3; ~hhc_p2=0.7;
+//p3
+~kick_p3=0.3; ~caixaxina_p3=0.6; ~hhc_p3=0.3;
+//p4
+~kick_p4=0.1; ~caixaxina_p4=0.3; ~hhc_p4=0.3;
+//
+//Tdef(\Tkick).play;
+Tdef(\Tcaixaxina).play;
+Tdef(\Thhc).play;
+)
+
+
+//#4 tempo lent amb 4 samples *caixa nova
+(
+var p1,p2,p3,p4;
+//beat duration 1 2 4 8
+~dur=2;
+//sequence duration 1 2 4 8 (larger than beat duration)
+~t=2;
+//pattern
+~pat=[1,1,1,2, 1,1,3,3, 2,2,1,2, 3,4,3,3, 2,2,4,4, 3,4,4,4];
+//p1
+~kick_p1=0; ~caixaxina_p1=0.1; ~hhc_p1=0.1; ~caixa_p1=0.3;
+//p2
+~kick_p2=0.1; ~caixaxina_p2=0.7; ~hhc_p2=0.3; ~caixa_p2=0.2;
+//p3
+~kick_p3=0.0; ~caixaxina_p3=0.3; ~hhc_p3=0.6; ~caixa_p3=0.4;
+//p4
+~kick_p4=0.5; ~caixaxina_p4=0.7; ~hhc_p4=0.3; ~caixa_p4=0.8;
+//
+Tdef(\Tkick).play;
+Tdef(\Tcaixaxina).play;
+Tdef(\Thhc).play;
+Tdef(\Tcaixa).play;
+)
+
+// #5 drop the bass 808 eoe
+(
+var p1,p2,p3,p4;
+//beat duration 1 2 4 8
+~dur=2;
+//sequence duration 1 2 4 8 (larger than beat duration)
+~t=2;
+//pattern
+~pat=[1,1,1,2, 1,1,3,3, 2,2,1,2, 3,4,3,3, 2,2,4,4, 3,4,4,4];
+//p1
+~kick_p1=0; ~caixaxina_p1=0.1; ~hhc_p1=0.1; ~eoe_p1=0.0;
+//p2
+~kick_p2=0.7; ~caixaxina_p2=0.7; ~hhc_p2=0.3; ~eoe_p2=0.1;
+//p3
+~kick_p3=0.5; ~caixaxina_p3=0.3; ~hhc_p3=0.6; ~eoe_p3=0.0;
+//p4
+~kick_p4=0.3; ~caixaxina_p4=0.7; ~hhc_p4=1; ~eoe_p4=0.1;
+//
+Tdef(\Tkick).play;
+Tdef(\Tcaixaxina).play;
+Tdef(\Thhc).play;
+Tdef(\Teoe).play;
+)
+
+
+// #6 molts samples diferents a la vegada
+(
+var p1,p2,p3,p4;
+//beat duration 1 2 4 8
+~dur=1;
+//sequence duration 1 2 4 8 (larger than beat duration)
+~t=2;
+//pattern
+~pat=[1,1,1,2, 1,1,3,3, 2,2,1,2, 3,4,3,3, 2,2,4,4, 3,4,4,4];
+//p1
+~kick_p1=0; ~caixaxina_p1=0.1; ~hhc_p1=0.1; ~clap_p1=0.0; ~cymatics_p1=0.1;
+//p2
+~kick_p2=0.7; ~caixaxina_p2=0.7; ~hhc_p2=0.3; ~clap_p2=0.1; ~cymatics_p2=0.2;
+//p3
+~kick_p3=0.5; ~caixaxina_p3=0.3; ~hhc_p3=0.6; ~clap_p3=0.0; ~cymatics_p3=0.5;
+//p4
+~kick_p4=0.3; ~caixaxina_p4=0.7; ~hhc_p4=1; ~clap_p4=0.1; ~cymatics_p4=0.3;
+//
+//Tdef(\Tkick).play;
+Tdef(\Tcaixaxina).play;
+Tdef(\Thhc).play;
+Tdef(\Tclap).play;
+Tdef(\Tcymatics).play;
+)
+
+
+// #7 molts samples diferents a la vegada
+(
+var p1,p2,p3,p4;
+//beat duration 1 2 4 8
+~dur=1;
+//sequence duration 1 2 4 8 (larger than beat duration)
+~t=2;
+//pattern
+~pat=[1,1,1,2, 1,1,3,3, 2,2,1,2, 3,4,3,3, 2,2,4,4, 3,4,4,4];
+//p1
+~kick_p1=0; ~caixaxina_p1=0.1; ~hhc_p1=0.1; ~clap_p1=0.0; ~sn_p1=0.1;
+//p2
+~kick_p2=0.7; ~caixaxina_p2=0.7; ~hhc_p2=0.7; ~clap_p2=0.3; ~sn_p2=0.6;
+//p3
+~kick_p3=0.5; ~caixaxina_p3=0.3; ~hhc_p3=0.6; ~clap_p3=0.2; ~sn_p3=0.5;
+//p4
+~kick_p4=0.3; ~caixaxina_p4=0.7; ~hhc_p4=1; ~clap_p4=0.1; ~sn_p4=0.3;
+//
+Tdef(\Tkick).play;
+Tdef(\Tcaixaxina).play;
+Tdef(\Thhc).play;
+Tdef(\Tclap).play;
+Tdef(\Tsn).play;
+)
