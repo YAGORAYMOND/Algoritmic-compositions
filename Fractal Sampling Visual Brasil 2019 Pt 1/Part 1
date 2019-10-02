@@ -1,0 +1,178 @@
+      ///
+    /////
+      ///
+      ///
+      ///
+    ///////
+
+//SYNTH
+(
+Server.default=s=Server.local;
+s.boot;
+
+~snare =  Buffer.read(s,Platform.resourceDir +/+ "sounds/perc samples/snare.wav");
+~hhc =   Buffer.read(s,Platform.resourceDir +/+ "sounds/perc samples/hhc.wav");
+~kick =  Buffer.read(s,Platform.resourceDir +/+ "sounds/perc samples/kick.wav");
+~eoe =  Buffer.read(s,Platform.resourceDir +/+ "sounds/perc samples/808.wav");
+~caixa =  Buffer.read(s,Platform.resourceDir +/+ "sounds/perc samples/caixa.wav");
+~caixaxina =  Buffer.read(s,Platform.resourceDir +/+ "sounds/perc samples/caixaxina.wav");
+~clap =  Buffer.read(s,Platform.resourceDir +/+ "sounds/perc samples/clap.wav");
+~cymatics =  Buffer.read(s,Platform.resourceDir +/+ "sounds/perc samples/cymatics.wav");
+~hho =  Buffer.read(s,Platform.resourceDir +/+ "sounds/perc samples/hho.wav");
+)
+
+(
+SynthDef(\playbuf,{
+arg out=0, bufnum=0, rate=1, trigger=1, startpos=0;
+var buffer;
+buffer=PlayBuf.ar(
+numChannels:1,
+bufnum: bufnum,
+rate:BufRateScale.kr(bufnum)*rate,
+trigger: trigger,
+startPos: BufFrames.ir(bufnum)*startpos,
+loop:0,
+doneAction:2
+);
+
+Out.ar(out, Pan2.ar(buffer,0.0));
+}).add;
+)
+
+
+//FUNCTION
+(
+f={
+arg i=0,len=1,dur=1;//i=density, len=pattern length, dur=beat duration
+var cand=[],seq=[];
+round((10*((1-i)**2)),1).do{cand=cand++[dur]};
+round(((135/2)*i*((i**2)-(2*i)+1)),1).do{cand=cand++[dur/2]};
+round(((135/2)*(i**2)*(1-i)),1).do{cand=cand++[dur/4]};
+round((10-(10*((i-1)**2))),1).do{cand=cand++[dur/8]};
+while({seq.sum<len},{
+var j;
+j=cand.choose;
+if ((seq++j).sum<=len,{seq=seq++j});
+});
+seq.postln;
+};
+)
+
+Tdef(\Tsn).play;
+
+//ROUTINE
+(
+Tdef(\Tsn,
+{var  p1,p2,p3,p4,o;
+p1=f.value(~sn_p1,~t,~dur);
+p2=f.value(~sn_p2,~t,~dur);
+p3=f.value(~sn_p3,~t,~dur);
+p4=f.value(~sn_p4,~t,~dur);
+
+o=[p1,p2,p3,p4];
+
+~pat.do{|p,c|
+c.postln;
+o[p-1].do{|item,count|
+Synth(\playbuf,[\out,0,\bufnum,~snare.bufnum]);
+item.wait;
+}}});
+
+Tdef(\Thhc,
+{var  p1,p2,p3,p4,o;
+p1=f.value(~hhc_p1,~t,~dur);
+p2=f.value(~hhc_p2,~t,~dur);
+p3=f.value(~hhc_p3,~t,~dur);
+p4=f.value(~hhc_p4,~t,~dur);
+
+o=[p1,p2,p3,p4];
+
+~pat.do{|p,c|
+c.postln;
+o[p-1].do{|item,count|
+Synth(\playbuf,[\out,0,\bufnum,~hhc.bufnum]);
+item.wait;
+}}});
+
+Tdef(\Tkick,
+{var  p1,p2,p3,p4,o;
+
+p1=f.value(~kick_p1,~t,~dur);
+p2=f.value(~kick_p2,~t,~dur);
+p3=f.value(~kick_p3,~t,~dur);
+p4=f.value(~kick_p4,~t,~dur);
+
+o=[p1,p2,p3,p4];
+
+~pat.do{|p,c|
+c.postln;
+o[p-1].do{|item,count|
+Synth(\playbuf,[\out,0,\bufnum,~kick.bufnum]);
+item.wait;
+}}});
+
+Tdef(\Teoe,
+{var  p1,p2,p3,p4,o;
+p1=f.value(~eoe_p1,~t,~dur);
+p2=f.value(~eoe_p2,~t,~dur);
+p3=f.value(~eoe_p3,~t,~dur);
+p4=f.value(~eoe_p4,~t,~dur);
+
+o=[p1,p2,p3,p4];
+
+~pat.do{|p,c|
+c.postln;
+o[p-1].do{|item,count|
+Synth(\playbuf,[\out,0,\bufnum,~eoe.bufnum]);
+item.wait;
+}}});
+
+Tdef(\Tcaixa,
+{var  p1,p2,p3,p4,o;
+p1=f.value(~caixa_p1,~t,~dur);
+p2=f.value(~caixa_p2,~t,~dur);
+p3=f.value(~caixa_p3,~t,~dur);
+p4=f.value(~caixa_p4,~t,~dur);
+
+o=[p1,p2,p3,p4];
+
+~pat.do{|p,c|
+c.postln;
+o[p-1].do{|item,count|
+Synth(\playbuf,[\out,0,\bufnum,~caixa.bufnum]);
+item.wait;
+}}});
+
+Tdef(\Tcaixaxina,
+{var  p1,p2,p3,p4,o;
+p1=f.value(~caixaxina_p1,~t,~dur);
+p2=f.value(~caixaxina_p2,~t,~dur);
+p3=f.value(~caixaxina_p3,~t,~dur);
+p4=f.value(~caixaxina_p4,~t,~dur);
+
+o=[p1,p2,p3,p4];
+
+~pat.do{|p,c|
+c.postln;
+o[p-1].do{|item,count|
+Synth(\playbuf,[\out,0,\bufnum,~caixaxina.bufnum]);
+item.wait;
+}}});
+
+Tdef(\Tclap,
+{var  p1,p2,p3,p4,o;
+p1=f.value(~clap_p1,~t,~dur);
+p2=f.value(~clap_p2,~t,~dur);
+p3=f.value(~clap_p3,~t,~dur);
+p4=f.value(~clap_p4,~t,~dur);
+
+o=[p1,p2,p3,p4];
+
+~pat.do{|p,c|
+c.postln;
+o[p-1].do{|item,count|
+Synth(\playbuf,[\out,0,\bufnum,~clap.bufnum]);
+item.wait;
+}}});
+
+)
