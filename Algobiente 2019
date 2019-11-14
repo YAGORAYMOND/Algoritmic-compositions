@@ -1,0 +1,259 @@
+//ALGOBIENTE 2019
+s.quit;
+s.options.numOutputBusChannels = 8; // total number of channels output
+s.meter;
+s.boot;
+s.scope;
+
+
+
+--1 //iniciar amb drone
+
+//DRONE BATIMENTS 8 CANALS!
+//Com modular>
+//1. cambiar saw o sinosc.
+//2. cambiar el .5 .1 .05
+//3. cambiar el /2 /1 /0.5
+
+(Ndef(\x).fadeTime=10; Ndef(\y).fadeTime=10; Ndef(\z).fadeTime=10;)
+
+Ndef(\x,{SinOsc.ar(Array.rand(8,60,60.01).midicps/2,0,0.05)}).play;
+Ndef(\x,{Saw.ar(Array.rand(8,60,60.1).midicps,0.05)}).play;
+Ndef(\x).clear(10);
+
+
+Ndef(\y,{SinOsc.ar(Array.rand(8,64,64.05).midicps/2,0,0.05)}).play;
+Ndef(\y,{Saw.ar(Array.rand(8,64,64.05).midicps,0.05)}).play;
+Ndef(\y).clear(10);
+
+
+Ndef(\z,{SinOsc.ar(Array.rand(8,67,67.5).midicps/2,0,0.05)}).play;
+Ndef(\z,{Saw.ar(Array.rand(8,67,67.5).midicps/0.5,0.05)}).play;
+Ndef(\z).clear(10);
+
+
+(Ndef(\z1).fadeTime=10; Ndef(\z2).fadeTime=10;  Ndef(\z3).fadeTime=10;)
+Ndef(\z1,{Saw.ar(Array.rand(8,67,67.1).midicps/1,0.05)}).play;
+Ndef(\z2,{Saw.ar(Array.rand(8,67,67.2).midicps/0.5,0.05)}).play;
+Ndef(\z3,{Saw.ar(Array.rand(8,67,67.5).midicps/0.25,0.05)}).play;
+(Ndef(\z1).clear(10); Ndef(\z2).clear(20);  Ndef(\z3).clear(30);)
+
+
+
+
+
+--2 //canvi de tema
+(
+Ndef(\a,{ var sig;
+	sig = Pulse.ar( { |i| LFNoise0.kr( rrand(10, 20), 200, i * 100 + 400) } ! 10);
+	sig = sig*Line.kr(0,1,10);
+	SplayAz.ar(8, sig,spread:MouseY.kr(1, 0), level:0.2, center: MouseX.kr(-1, 1));
+}).play;
+)
+Ndef(\a).clear(10);
+
+
+--3 //Estona sorollets molt variats
+
+//noise rndm
+Ndef(\d,{PanAz.ar(8,LFNoise2.ar*EnvGen.ar(Env([0,1,0],[0.01,0.05]),Dust.kr(2)),pos:0* 0.25,orientation:6,width:1)}).play;//orientation
+Ndef(\d).clear;
+
+//baix
+Ndef(\e,{PanAz.ar(8,SinOsc.ar([120,130]*Line.kr(1,1,10),0,Line.kr(0,1,10)),pos:SinOsc.kr(0.01).range(0,2)*0.25,orientation:0,width:1)}).play;
+Ndef(\e).clear(20);
+
+//cosa rara baixa
+Nfef(\f).fadeTime(10);
+Ndef(\f,{SplayAz.ar(8,SinOsc.ar([80,85,90]*SinOsc.ar(0.01).range(0,1),0,Line.kr(0,1,10)),center:SinOsc.kr(0.01).range(0,2),orientation:0,width:1)}).play;
+Ndef(\f).clear;
+
+//vent cambiant x
+Ndef(\g,{PanAz.ar(8,LPF.ar(WhiteNoise.ar,MouseX.kr(100,1000,1)),pos:MouseY.kr(0,8)*0.25, orientation:0, width:1)}).play;//cambiar width
+Ndef(\g).clear(10);
+
+//xixarras
+Ndef(\h,{Saw.ar(SinOsc.ar(100).range(5000,6000),0.1)*EnvGen.ar(Env([0,1,0],[0.5,0.5]),Dust.kr(0.1))}).play;
+Ndef(\h).clear;
+
+//canny
+Ndef(\i,{Saw.ar(SinOsc.ar(5000).range(5000,6000),0.1)*EnvGen.ar(Env([0,1,0],[0.5,0.5]),Dust.kr(0.7))}).play;
+Ndef(\i).clear;
+
+//barco
+Ndef(\j,{LPF.ar(Ringz.ar(Saw.ar(Saw.ar(LFNoise0.ar(1).range(100,1000)).range(100,200),0.1),SinOsc.kr(1000).range(100,1000),0.01)*EnvGen.ar(Env([0,1,1,0],[0.001,0.3,1],0.01),Dust.kr(1)),200)}).play;
+Ndef(\j).clear(3)
+
+
+//piong
+Ndef(\k,{Ringz.ar(Saw.ar(Saw.ar(2).range(1000,2000),0.1),SinOsc.kr(100).range(100,1000),0.01)*EnvGen.ar(Env([0,1,0],[0.5,0.5]),Dust.kr(1))}).play;
+Ndef(\k).clear(3)
+
+//nyii
+Ndef(\l,{LPF.ar(Saw.ar(3000),SinOsc.ar(LFNoise2.kr(4).range(8,10)).range(800,1900))*EnvGen.ar(Env([0,1,0],[1,1]),Dust.kr(1))}).play;
+Ndef(\l).clear(5);
+
+
+
+--4 //long synths
+
+
+{SplayAz.ar(8,SinOsc.ar(300*[1,1.01],0,SinOsc.ar(Line.kr(1,10,30)).range(0.01,0.1)*EnvGen.kr(Env([0,1,0],[15,15]),doneAction:2)),center:1, width:4)}.play //center 1-2
+
+{PanAz.ar(8,SinOsc.ar(200,0,0.1)*EnvGen.kr(Env([0,1,0],[15,15]),doneAction:2),pos:2*0.25, width:4)}.play //pos 0-8
+
+{SplayAz.ar(8,SinOsc.ar([60,64].midicps,0,0.07*SinOsc.ar(XLine.kr(1,60.midicps,30)*SinOsc.ar(XLine.kr(1,64.midicps,50))).range(0.01,1))*EnvGen.kr(Env([0,1,1,0],[30,10,15]),doneAction:2),center:4, width:4)}.play //anar cambiant centre 0-7
+
+{PanAz.ar(8,MoogFF.ar(Saw.ar(100,0.1),MouseY.kr(100,10000))*EnvGen.kr(Env([0,1,0],[15,15]),doneAction:2),pos:6*0.25,width:4)}.play //pos 0-7
+
+
+
+
+
+
+--5 // AMBIENT
+Ndef(\iter).fadeTime=5;
+Ndef(\iter).play;
+
+
+(
+Ndef(\iter,{
+var temp,sum;
+sum=0;
+10.do{
+		temp=VarSaw.ar({EnvGen.kr(Env.circle( Array.fill(14,{([40,60,80,120]*3).choose }),[8]!15,\step))}*{Rand(0.99,1.02)}!2,0,0.3);//*1 //120 opcional// PHASE 0.3 / 0.05 / SinOsc.kr(0.1).range(0.05,0.3) / Line.kr(0.5,0.0,100)
+		sum=sum+temp;
+	};
+	sum=sum*0.1;//amp
+	PanAz.ar(8, sum, pos:LFSaw.kr(0.2), level:0.2, width: MouseX.kr(2,8));
+});
+)
+
+
+Ndef(\iter).clear(30);
+
+
+
+--6 //circle oscilation
+
+
+Ndef(\x,{PanAz.ar(8,Saw.ar(120,0.1),pos:LFSaw.kr(0.1*MouseY.kr(0.8,MouseX.kr(2,40))).range(0,8),width:1)}).play;
+Ndef(\x).clear;
+
+Ndef(\y,{PanAz.ar(8,Saw.ar(120*2,0.1),pos:LFSaw.kr(0.2*MouseY.kr(0.8,MouseX.kr(2,40))).range(0,8),width:1)}).play;
+Ndef(\y).clear;
+
+Ndef(\z,{PanAz.ar(8,Saw.ar(120*8,0.1),pos:LFSaw.kr(0.4*MouseY.kr(0.8,MouseX.kr(2,40))).range(0,8),width:1)}).play;
+Ndef(\z).clear;
+
+
+
+
+
+
+
+
+--7 //noise de fondo
+Ndef(\f,{PanAz.ar(8,Mix.ar(LPF.ar(WhiteNoise.ar(0.1),{|i| LFNoise2.kr(rrand(1,20)).range(100,1000)}!10)),pos:MouseX.kr(0,7)*0.25,orientation:0,width:2)}).play;//si no es percep be cambiar el mouse X per un punt fixe
+Ndef(\f).clear(10);
+
+
+
+/////
+--8//CIRCLE FI
+/////
+
+(
+SynthDef(\so1,{
+	arg freq=90,a=0.01,b=1,c=0.1;
+	var sig, env;
+	sig=SinOsc.ar(freq.midicps,0,0.1);
+	env=EnvGen.kr(Env([0,1,0],[a,b,c]),doneAction:2);
+	sig=PanAz.ar(8,sig*env,pos:0*0.25,orientation:0,width:1);//change pos 0 to 7, change width 2,4,6
+	Out.ar(0,sig);
+}).add;
+
+
+
+SynthDef(\so2,{
+	arg freq=90,a=0.01,b=1,c=0.1,out=1;
+	var sig, env;
+	sig=LPF.ar(Saw.ar(freq.midicps+rrand(-1,1),0.1),500);//1 to 10 rrand
+	env=EnvGen.kr(Env([0,1,0],[a,b,c]),doneAction:2);
+	sig=PanAz.ar(8,sig*env,pos:4* 0.25,orientation:0,width:1);//change pos 0 to 7, change width 2,4,6
+	Out.ar(0,sig);
+}).add;
+)
+//jugar amb el \a,a (amb i sense)
+//fer cuadrar b sempre amb acutal per tenir continuitat
+//fer que cada nota surti per un canal o randomly
+(
+
+var i=0, j=0, fifths=[[60,64,67,72],[67,71,74,62],[62,66,69,74],[69,73,76,64],[64,68,71,66],[59,63,66,71],[66,70,73,61],[61,65,68,73],[68,72,75,60],[63,67,70,58],[58,62,65,70],[65,69,72,60]];
+
+Tdef(\r1,{
+	var b1, b0=0.25, b=0.25;
+	inf.do{
+		((fifths[i%11])-12).do{|i|
+			Synth(\so1).set(\freq,i,\b,b/3);
+			0.1.wait;
+		};
+		"------------".postln;
+		"i".post; i.postln;
+		"r1_".post; b.postln;
+
+
+		if((b<b0),{b1=b/1.1});
+		if((b>b0),{b1=b*1.1});
+		if((b<=0.25),{b1=b*1.1});
+		if((b>=10),{b1=b/1.1});
+
+		if((b<=0.25),{i=i+1});
+
+		b0=b;
+		b=b1;
+}});
+
+
+Tdef(\r2,{
+	var b1, b0=10, b=10;
+
+	inf.do{
+		(fifths[(j)%11]).do{|i|
+			Synth(\so2).set(\freq,i,\a,b,\b,b/3);
+			0.1.wait;//anar cambiant 0.25, 0.5, 1
+		};
+
+		"j".post; j.postln;
+		"r2-b_".post; b.postln;
+
+		if((b<b0),{b1=b/1.1});
+		if((b>b0),{b1=b*1.1});
+		if((b<0.25),{b1=b*1.1});
+		if((b>=10),{b1=b/1.1});
+
+		if((b<0.25),{j=i+[-1,0,1].choose});
+
+
+		b0=b;
+		b=b1;
+
+}});
+)
+//ficar .choose encopmtes de+1
+//controlar parametres dels synthdef live!
+//afegir un si es 0.5 tonrar enrere i si es 0.7 tonrar a tornar.
+
+
+(
+Tdef(\r1).play;
+
+Tdef(\r2).play;
+)
+
+(
+Tdef(\r1).stop;
+)
+(
+Tdef(\r2).stop;
+)
