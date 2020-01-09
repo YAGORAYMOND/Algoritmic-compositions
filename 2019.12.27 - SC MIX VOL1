@@ -1,0 +1,139 @@
+//2019.12.27 - SC MIX VOL1
+
+s.meter
+().play
+
+(
+SynthDef(\beats,{
+	arg amp=1,freq=60,atk=2,rel=1,delaytime=0.4,beat=1;
+	var sig,env;
+	sig=SinOsc.ar([freq.midicps,freq.midicps+beat],0,0.1);
+	env=EnvGen.kr(Env([0,1,0],[atk,rel]));
+	sig=CombN.ar(sig*env,delaytime,delaytime,20)*EnvGen.kr(Env([0,1,0],[20,20],\step),doneAction:2);
+	Out.ar([0,1],sig*amp);
+}).add;
+
+SynthDef(\delay,{
+	arg amp=1,freq=60,atk=0.01,rel=1,delaytime=0.3;
+	var sig,env;
+	sig=SinOsc.ar(freq.midicps,0,0.1);
+	env=EnvGen.kr(Env([0,1,0],[atk,rel]));
+	sig=CombN.ar(sig*env,delaytime,delaytime,10)*EnvGen.kr(Env([0,1,0],[20,20],\step),doneAction:2);
+	Out.ar([0,1],Pan2.ar(sig*amp,0));
+}).add;
+)
+
+
+
+p=ProxySpace.push(Server.local.boot);
+
+
+(
+Pbindef(\Pbeats,//pbind1
+	\instrument, \beats,
+	\freq, Pseq((([62, 66, 69, 61])),inf),
+	\dur, Pseq([2,3,1,4],inf),
+	\amp, ~amp1
+).play;
+
+Pbindef(\Pdelay,//pbind2
+	\instrument, \delay,
+	\freq, Pseq((([62, 66, 69, 61])),inf),
+	\dur, Pseq([2,3,1,4],inf),
+	\amp, ~amp2,
+	\delaytime, ~delay2
+).play;
+
+
+~amp1=0;
+~amp2=0;
+)
+
+
+
+
+
+
+/////control
+
+(
+~amp1={Line.kr(0.01,0.5,20)};
+~amp2=0;
+~delay2=0.3;
+)
+
+
+(
+~amp1={MouseX.kr(0.5,0.1)};
+~amp2={MouseX.kr(0.1,1)};
+)
+
+
+~delay2={SinOsc.kr(0.1).range(0.3,0.33)};
+~delay2={SinOsc.kr(0.1).range(0.1,0.3)}; //esta guapo! desfasat
+
+
+
+
+
+
+~amp1={Line.kr(0.5,0.0001,20)};
+~amp2={Line.kr(0.5,0.0001,20)};
+
+
+
+----------------------------------------------------------------------------------------------------------------------------
+
+///centrar en 61 midi!! no se com es fa!
+
+//SINTE1
+Ndef(\clip).fadeTime=10;
+
+Ndef(\clip,{Ringz.ar(Mix.ar(SinOsc.ar(([50,54,57,62,66,69,74,78,81]+0).midicps,0,0.01))!2,SinOsc.ar(0.1).range(100,200),0.05,0.05).clip2(0.3)});
+//inici amp 0.001-->0.05--0.01 i amb +0 --> +7
+Ndef(\clip).play;
+Ndef(\clip).clear(10)
+
+//BAIXAR LA AMPLITUD
+//idea Multisaw
+
+Ndef(\multifreq).fadeTime=10;
+Ndef(\multifreq, {Mix.ar(SinOsc.ar(([50,54,57,62,66,69,74,78,81]+0).midicps,0,0.05)*LFSaw.kr(Array.rand(9,0.1,0.5)).range(0,1)*0.5)!2}).play;//cambiar el array rand perque soni a difernts tems. +0. +7 -7 0. *0.05 --> 0.5
+Ndef(\multifreq).clear(10)
+
+
+
+----------------------------------------------------------------------------------------------------------------------
+
+
+//ARPEGI divisor
+
+Ndef(\a).fadeTime = 15;
+Ndef(\a).play;
+Ndef(\a).clear(10);
+
+(
+var t=38.midicps; //RE
+Ndef(\a,
+{LPF.ar(
+Mix([
+VarSaw.ar(round(LFNoise0.kr(0.5).range(100,200),t)*[1,1.01],rand(0,1),MouseY.kr(0,0.5),0.03),
+VarSaw.ar(round(LFNoise0.kr(1).range(100,300),t),rand(0,1),MouseY.kr(0,0.5),0.03),
+VarSaw.ar(round(LFNoise0.kr(2).range(100,200),t),rand(0,1),MouseY.kr(0,0.5),0.03),
+VarSaw.ar(round(LFNoise0.kr(4).range(100,300),t),rand(0,1),MouseY.kr(0,0.5),0.03)
+])!2, MouseY.kr(500,15000)+LFNoise0.kr(4).range(500,1000) )};//rang 500 15000
+)
+)
+
+
+
+//jugar a pujar el rang de divisio 1,2,4,8,16.
+//Jugar a pujar o baixar el rang de freq 100-10000
+//Cambiar els volums relatius
+//Jugar amb MouseX i Y
+
+//cambiar el rang 100-200 i les amplituds
+
+
+
+
