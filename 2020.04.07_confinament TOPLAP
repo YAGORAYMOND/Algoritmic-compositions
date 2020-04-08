@@ -1,0 +1,120 @@
+//////////////////////////
+// SUPERCOLLIDER SYNTHS //
+//////////////////////////
+
+(
+SynthDef(\am, {
+	var out = \out.kr(0);
+	var amp = \amp.kr(0.2);
+	var pan = \pan.kr(0);
+	var sustain = \sustain.kr(1);
+	var env = EnvGen.ar(Env.linen(0.002, 0.996, 0.002, 1,-3), doneAction:2, timeScale:sustain);
+
+	var freq = \freq.kr(440);
+	var beat = \beat.kr(0.1);
+
+	var sig=SinOsc.ar(freq,0,0.1*SinOsc.kr([10,10*(1+1*beat)]).range(0,1));
+
+
+	OffsetOut.ar(out, DirtPan.ar(sig, ~dirt.numChannels, pan, env))
+}).add;
+)
+
+//////////////////////
+
+(
+SynthDef(\bpfsaw, {
+	var out = \out.kr(0);
+	var amp = \amp.kr(0.2);
+	var pan = \pan.kr(0);
+	var sustain = \sustain.kr(1);
+	var env = EnvGen.ar(Env.linen(0.002, 0.996, 0.002, 1,-3), doneAction:2, timeScale:sustain);
+	var freq = \freq.kr(80); //usar sempre amb freqs baixer (50-100 hz)
+
+	var detune = \detune.kr(0.2); //en semitons. 0 l'anules i 1 es molt.(1 semito)
+	var rq= \rq.kr(0.1); //quantitat de filtre que fiques. A 0.01 es molt i 1 es casi inexistent.
+	var sig;
+
+	//detune=MouseX.kr(0,0.7);
+	//rq=MouseY.kr(0.01,0.1);
+
+	sig=0;
+	10.do{
+	sig=sig+BPF.ar(
+			in:Saw.ar(freq*LFNoise1.kr(0.5, detune).midiratio),
+			freq:LFNoise1.kr(0.2).exprange(freq*2, freq*50), //cutoff freq = armonics
+			rq: LFNoise1.kr(0.1). exprange(rq, 2*rq)  //reciprocal of Q (amount of filter)
+	);
+	};
+
+
+	OffsetOut.ar(out, DirtPan.ar(sig, ~dirt.numChannels, pan, env))
+}).add;
+)
+
+
+///////////
+// TIDAL //
+///////////
+
+-- 1 drone
+
+xfadeIn 1 1 $ slow 16 $ n "c2 ~ c4 ~ c3 c2 ~ ~"
+# s "bpfsaw" #legato 1.5 #attack 4 # sustain 15 # release 4
+#gain 1.0 #orbit 1
+
+xfadeIn 1 1 $ slow 16 $ n "c2 ~ c4 ~ [c3 c2] c2 ~ ~"
+# s "bpfsaw" #legato 1.5 #attack 4 # sustain 15 # release 4
+#gain 1.0 #orbit 1
+
+-- 2 bd
+
+d2 $ s "[bd/2(1,16)]" # gain 0.6
+
+d2 $ s "[bd([1 3],16)]" # gain 0.6
+
+d2 $ s "[bd([1 3],16), sd/4(3,16)]" # gain 0.6
+
+-- 3 chords
+
+xfadeIn 3 3 $ slow 2
+$ n (arpg "<c e f> < a d >" |+ "'maj9 'min7")
+# s "am" # gain 0.6
+
+-- 4 hh
+
+xfadeIn 4 3  $ s "< hh:8(6,16) hh:8(3,16) hh:8(2,16) >"  -- $ jux rev
+
+-- 5
+
+xfadeIn 5 10 $ jux rev $ slow 1
+$ n (arp "<thumbdown thumbdown pinkyup > " "c5'maj9" )
+# s "am" # gain 0.4  -- beat
+
+xfadeIn 5 10 $ jux rev $ slow 1
+$ n (arp "<thumbdown pinkyup pinkyup > " "c<5 4>'maj9" )
+# s "am" # gain 0.4  -- beat
+
+
+-- 6
+
+xfadeIn 6 4 $ slow 8
+$ n (arpg "<c e f> < a d >" |+ "'maj9 'min7") # s "bpfsaw"
+# gain 0.6 # attack 2 #hold 3 #release 1 #legato 1.4
+
+xfadeIn 6 1 $ slow 8
+$ n (arpg "<c e <a f>> < a d >" |+ "'maj9 'min7") # s "bpfsaw"
+# gain 0.6 # attack 2 #hold 3 #release 0.3 #legato 1.4
+ #room 0.2 # orbit 0
+
+
+--  7 bd
+
+d2 $ s "bd*3 [<bd bd bd bd bd bd bd bd*2>]"
+
+
+
+-- segona part
+d1 $ slow 2 $ s "[bd([1 3 4],8) [hh([1 3],8) ~ ~ hh*4], cp]" # gain 1.3
+
+hush
