@@ -1,0 +1,168 @@
+/////////////////
+//SUPERCOLLIDER//
+/////////////////
+
+
+~fres=(55+24).midicps;
+~fres=(60+24).midicps;
+~fres=(64+24).midicps;
+~fres=(62+24).midicps;
+~fres=(70+24).midicps;
+(
+var t, fmin, fmax, fres;
+
+t=20;
+fmin=80;
+fmax=100;
+
+30.do(		
+	{{Pan2.ar(Ringz.ar(SinOsc.ar(XLine.kr({rrand(fmin,fmax)},261,t),0,0.02),~fres,10),[0,1].choose)*EnvGen.kr(Env([0,1,0],[10, 10],1),doneAction:2)}.play});
+)
+
+
+(
+SynthDef(\sin, {
+ |out,sustain=1,freq=440,speed=1,begin=0,end=1,pan,accelerate,offset,clamp=1, phase=4, fring=400|
+ var line, env, volume, tone, outAudio, sig1, sig2;
+
+ freq=freq*speed;
+
+ line = Line.ar(begin,end,sustain/speed,doneAction: Done.freeSelf);
+ env = Env.new(levels: [0, 1, 0.9, 0], times: [0.1, 0.5, 1], curve: [-5, 0, -5]);
+ volume = IEnvGen.ar(env, line);
+
+	sig1=SinOsc.ar([freq, freq+3],0,1);
+	sig2=Saw.ar([freq, freq+3],1);
+	tone= (sig1*MouseY.kr(1,0))+(sig2*MouseY.kr(0,1));
+	//tone= LPF.ar(tone,1000);
+
+ outAudio = RLPF.ar(tone*volume, 20000*clamp*volume,0.3); //truco perque no fagi clicking!
+ OffsetOut.ar(out,DirtPan.ar(outAudio, ~dirt.numChannels, pan, volume));
+}).add;
+)
+
+
+
+
+(
+SynthDef(\sq, {
+ |out,sustain=1,freq=440,speed=1,begin=0,end=1,pan,accelerate,offset,clamp=1, phase=4, fring=400|
+ var line, env, volume, tone, outAudio;
+
+ freq=freq*speed;
+
+ line = Line.ar(begin,end,sustain/speed,doneAction: Done.freeSelf);
+ env = Env.new(levels: [0, 1, 0.9, 0], times: [0.1, 0.5, 1], curve: [-5, 0, -5]);
+ volume = IEnvGen.ar(env, line);
+
+	tone= LPF.ar(Pulse.ar(freq,SinOsc.ar([20,1]).range(0.1,0.9),0.1),1000);
+	//tone= LPF.ar(tone,1000);
+
+ outAudio = RLPF.ar(tone*volume, 20000*clamp*volume,0.3); //truco perque no fagi clicking!
+ OffsetOut.ar(out,DirtPan.ar(outAudio, ~dirt.numChannels, pan, volume));
+}).add;
+)
+
+
+
+/////////////////
+//TIDAL SYNHTS //
+////////////////.
+
+
+Inici
+
+--mola + degrade + SLOW 4 (inici)
+do
+    d6 $ degradeBy 0.2 $  (0.05 ~>) $ slow 4 $  n "7 0 [14 7] ~ . 4 [8 4] ~ 11 . 2 <2 _> _ [6 <9 7>]. 11 <11 11 18 > _ 14" |-| 12  # s "sin" # attack 0.01 #hold 0.02 # release 0.1 # room 2 # sz 0.7 #gain 0.7 # pan 1
+    d7 $ degradeBy 0.3 $  slow 4 $  n "7 0 [14 7] ~ . 4 [8 4] ~ 11 . 2 <2 _> _ [6 <9 7>]. 11 <11 11 18 > _ 14"  # s "sin" # attack 0.01 #hold 0.02 # release 0.1 # room 2 # sz 0.6 #gain 0.6 # pan 0
+    xfadeIn 8 10 $ slow 4 $ n "<g4'maj c4'maj> e5'maj d5'maj <d4'maj g4'maj> " # s "sin" # attack 0.5 # hold 0.5 #release 2 #legato 1.4  #gain 0.7
+
+-- degrades
+do
+    d6 silence
+    d7 $ degradeBy "0" $ slow 2 $  n "7 0 [14 11] . 2 6 9 ~ . 2 6 9 ~ . 2 [6 <9 11>]" |+| 0 # s "sin" # attack 0.01 #hold 0.02 # release 0.1 # room 2 # sz 0.8 #gain 0.7
+    d8 $ slow 2 $ n "< g4'maj d5'maj d5'maj g4'maj> " # s "sin" # attack 2 # hold 0.2  #release 10 #gain 0.7
+
+-- with the chords to 1/sep
+    d8 $ slow 2 $ n " g4'maj d5'maj d5'maj g4'maj " # s "sin" # attack 1 # hold 0.2  #release 3  # legato 1.2 #gain 0.7
+
+    d8 $ slow 1 $ n " g4'maj g4'maj d5'maj d5'maj d5'maj d5'maj g4'maj " # s "sin" # attack 0.5 # hold 0.2  #release 3  # legato 1.4 #gain 0.7 --anar pujant lentament el legatto a 2~
+
+-- !!degradar d7 abans de la transicio
+
+-- moment lent amb la 2a melodia lenta i amb offset
+
+  -- #1 cambiar el fondo
+  d8 $ slow 4 $ n " g4'maj d5'maj d5'maj g4'maj " # s "sin" # attack 0.5 # hold 0.4  #release 3  # legato "2" #gain 0.7
+  -- #2 cambiar la melodia --> degrade 0.3
+  d7 $ degradeBy 0 $ slow 4 $  n "7 0 [14 11] . 2 6 9 ~ . 2 6 9 ~ . 2 [6 <9 11>]"  # s "sin" # attack 0.01 #hold 0.02 # release 0.1 # room 2 # sz 0.8 #gain 0.7
+  -- #3 afegir el seguimen
+  d6 $ degradeBy 0.2 $ (0.05 ~>) $ slow 4 $  n "7 0 [14 11] . 2 6 9 ~ . 2 6 9 ~ . 2 [6 <9 11>]" |-| 12  # s "sin" # attack 0.01 #hold 0.02 # release 0.1 # room 2 # sz 0.8 #gain 0.7
+
+  -- Tornar amb laltre rapida
+
+
+-- entrar la melodia inicial pero rapida
+
+    d6 $ discretise 4 $ degradeBy 0 $ (0.05 ~>) $ slow 2 $  n "7 0 [14 7] ~ . 4 [8 4] ~ 11 . 2 <2 _> _ [6 <9 7>]. 11 <11 11 18 > _ 14" |-| 12  # s "sin" # attack 0.01 #hold 0.02 # release 0.1 # room 2 # sz 0.7 #gain 0.7 # pan 1
+    d7 $ discretise 5 $ degradeBy 0 $ slow 2 $  n "7 0 [14 7] ~ . 4 [8 4] ~ 11 . 2 <2 _> _ [6 <9 7>]. 11 <11 11 18 > _ 14"  # s "sin" # attack 0.01 #hold 0.02 # release 0.1 # room 2 # sz 0.6 #gain 0.6 # pan 0
+    xfadeIn 8 10 $ slow 2 $ n "<g4'maj c4'maj> e5'maj d5'maj <d4'maj g4'maj> " # s "sin" # attack 0.5 # hold 0.5 #release 2 #legato 1.4  #gain 0.7
+
+    do
+      d6 $ degradeBy 0 $ (0.05 ~>) $ slow 2 $  n "7 0 [14 7] ~ . 4 [8 4] ~ 11 . 2 <2 _> _ [6 <9 7>]. 11 <11 11 18 > _ 14" |-| 12  # s "sin" # attack 0.01 #hold 0.02 # release 0.1 # room 2 # sz 0.7 #gain 0.7 # pan 1
+      d7 $ degradeBy 0 $ slow 2 $  n "7 0 [14 7] ~ . 4 [8 4] ~ 11 . 2 <2 _> _ [6 <9 7>]. 11 <11 11 18 > _ 14"  # s "sin" # attack 0.01 #hold 0.02 # release 0.1 # room 2 # sz 0.6 #gain 0.6 # pan 0
+      d8  $ slow 2 $ n "<g4'maj c4'maj> e5'maj d5'maj <d4'maj g4'maj> " # s "sin" # attack 0.5 # hold 0.5 #release 2 #legato 1.4  #gain 0.7
+
+
+FI!
+  d6 silence
+  d7 silence
+  d8 silence
+
+
+d6 $ slow 1 $"sq(1,2, <0, 1, 0, 2>)" # n "7" |+| 0 #legato 1.5  --slow 0.1 0.01 glitch!
+d7 $ "sq(3,5, <0, 6>)" # n "<14 8>" # legato 1.2
+d8 $ slow "<1 2 4>" $ "sq(5,8,< 0 0 4>)" # n "<0 0 0 0 7>" #legato 2
+
+
+
+
+
+////////////////
+//TIDAL DRUMS //
+////////////////.
+
+setcps (120/60/4)
+
+
+RITME 1
+
+do
+  d1 $ struct ("10<001>0 1000 10<001>0 1000") $ s "bd:2"
+  d2 $ struct ("0001 0000 0001 0000") $ s "sn"
+  d3 $ struct ("1100 0000 1000 0010") $ s "hc:12"
+  d4 $ struct ("0010 1000 0000 1000") $ s "ho"
+  d5 $ struct ("1010 1010 0100 0100") $ s "cpu:14" #gain 1.5
+
+  d5 $ struct ("[ 1010 1010 0100 0100 | 10[11]0 10[11]0 0100 0100]") $ s "cpu:14" #gain 1.5
+
+do
+  d2 silence
+  d3 silence
+  d4 silence
+  d5 silence
+
+
+RITME 2
+
+do
+  d1 $ struct ("1000 10<001>0 1000 10<001>0") $ s "bd" # orbit 1
+  d2 $ struct ("0000 1000 0000 10<0001><0001>") $ s "sn" # orbit 1
+  d3 $ struct ("0000 0000 0000 0010") $ s "ho" # orbit 1 # djf 0.5 --0,1
+  d4 $ djf "[0.9 0.1 0.5 0.2] 0.4 [0.2 0.5 0.1 0.9] 0.7" # s "hh" # gain 2 # orbit 4
+
+d5 silence
+
+d1 silence
+
