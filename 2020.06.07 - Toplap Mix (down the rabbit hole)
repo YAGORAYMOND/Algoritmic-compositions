@@ -345,4 +345,4 @@ do
   xfadeIn 8 2 $ "~"
   xfadeIn 9 2 $ "~"
   
-// Special thanks to Ivan, Lina and Roger for the mentoring and guidance throug the live coding utopy and to the Toplap Barcelona comunity for making all this possible!
+// Special thanks to Ivan, Lina and Roger for the mentoring and guidance throug the live coding utopy and to the Toplap Barcelona comunity for making it possible!
