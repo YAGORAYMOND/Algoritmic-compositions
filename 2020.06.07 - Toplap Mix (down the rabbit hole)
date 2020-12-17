@@ -1,0 +1,348 @@
+
+///////////
+// PART 1//
+///////////
+
+////////////////////////
+// 1.1. SUPERCOLLIDER //
+////////////////////////
+
+f=[39,43,46].midicps; //ef3'maj
+f=[51,55,58].midicps; //ef4'maj
+f=[63,67,70].midicps; //ef5'maj
+
+f=[39,51,63].midicps; //df harmonics
+f=[43,55,67].midicps; //g harmonics
+f=[46,58,70].midicps; //af harmonics
+
+//af'maj (La b MAJ) [PIANO]
+f=[44,48,51].midicps;//af3'maj
+f=[56,60,63].midicps;//af4'maj
+f=[68,72,75].midicps;//af5'maj
+
+f=[44,56,68].midicps; //g# harmonics
+f=[48,60,72].midicps; //c harmonics
+f=[51,63,75].midicps; //d# harmonics
+
+
+(
+//Thanks to S Cotterill ("howto_co34pt_liveCode")
+
+Ndef(\drone).fadeTime=10;
+
+Ndef(\drone,{
+
+	var sig1, sig2, sig3, sig;
+
+	sig1 = Limiter.ar(DFM1.ar(SinOsc.ar([f[0],f[0]*1.01],0,0.03),(f[0]*2),LFNoise1.kr(0.05).range(0.9,1.1),1,0,0.0003,0.5),0.3);
+	sig2 = Limiter.ar(DFM1.ar(SinOsc.ar([f[1],f[1]*1.01],0,0.03),(f[1]*2),LFNoise1.kr(0.06).range(0.9,1.1),1,0,0.0003,0.3),0.3);
+	sig3 = Limiter.ar(DFM1.ar(SinOsc.ar([f[2],f[2]*1.01],0,0.03),(f[2]*2),LFNoise1.kr(0.07).range(0.9,1.1),1,0,0.0003,0.2),0.3); //jugar amb mul el (0.5/0.3/0.2)
+
+	sig=sig1+sig2+sig3;
+
+}).playN([0,1]);
+
+//)
+//(
+
+//Thanks to James McCartney ("Why Supercollider 2.0")
+
+Ndef(\dots).fadeTime=2;
+
+Ndef(\dots,{ //molaria fer que cada cop sortis per un diferent L,R. Preguntar a Ivan.
+	var sig, sigd, amp=1.5, out;
+	sig = Mix.ar(Array.fill(10, { Resonz.ar(Dust.ar(MouseY.kr(0.1,0.4), 50), (f.choose*[1,2,4].choose) + 10.0.rand, 0.003)}) );
+	sigd = Mix.ar(Array.fill(7,
+		{ CombL.ar(DelayN.ar(sig, 0.048);, 0.1, LFNoise1.kr(0.1.rand, 0.04, 0.05)*MouseX.kr(1,1.1), 15) })); //delay time mod
+	4.do(
+		{ sigd = AllpassN.ar(sigd, 0.050, [0.050.rand, 0.050.rand], 1) });
+	out=(sig+(0.1*sigd))*amp; //wet-dry
+}).playN([0,1]);
+)
+
+
+Ndef(\drone).free(10)
+Ndef(\dots).free(10)
+
+////////////////
+// 1.2. TIDAL //
+////////////////
+
+--  N/A
+
+
+
+////////////
+// PART 2 //
+////////////
+
+////////////////////////
+// 2.1. SUPERCOLLIDER //
+////////////////////////
+
+//N/A
+
+////////////////
+// 2.2. TIDAL //
+////////////////
+
+setcps (60/60/4)
+
+let parts =
+      [
+        ("init", n "~" # s "superpiano"),
+        ("I-L", n "df'maj" # s "superpiano" # legato 2.5),
+        ("I2-L", n "df'maj df'maj" # s "superpiano" # legato 3),
+        ("I-R",  n "1 _ _ _ . 1 8 _ _ . ~ . 8 _ 5 1" # s "superpiano"),
+        ("I2-R",  n "1 5 _ _ . 1 8 _ _ . ~ . 8 _ _ 5" # s "superpiano"),
+        ("I3-R",  n "1 _ _ _ . 1 8 _ _ . ~ . 8 5 8 1" # s "superpiano"),
+        -----
+        ("II-L", n "ds'min" # s "superpiano" # legato 2),
+        ("II-R", n "3 3 6 _ . 10 6 6 _ . 3 _ _ _ . 3 _ 6 _" # s "superpiano"),
+        ----------
+        ("III-L", n "f'min" # s "superpiano" # legato 3),
+        ("III2-L", n "f'min(3,8)" # s "superpiano" # legato 3),
+        ("III3-L", n "f'min(2,8)" # s "superpiano" # legato 3),
+        ("III-R",  n "5 _ 5 _ . 12 ~ 8 _ . ~ . 8 _ 5 _" # s "superpiano"),
+        ("III2-R",  n "12 _ 5 _ . 24 ~ 8 _ . ~ . 8 _ 5 _" # s "superpiano"),
+        -----
+        ("V-L", n "af'maj" # s "superpiano" # legato 2),
+        ("V-R", n "8 _ 15 _ . <8 15> . 12 _ 15 <~ 17> . ~" # s "superpiano"),
+        -----
+        ("VI-L", n "bf'min" # s "superpiano" # legato 2.5),
+        ("VI-R", n "17 _ _ _ . 13 17 _ 10 . 17 _ _ _ . ~" # s "superpiano")
+        ]
+    playFor c pat = seqP [(0, c, pat)]
+    urOnce c pat parts fs = playFor c $ ur c pat parts fs
+
+n "ds'min"
+
+//        LEFT           ||      RIGTH
+// I-L, I2-L             || I-R, I2-R, I3-R
+// II-L                  || II-R
+// III-L, III2-L, III3-L || III-R, III2-R
+// V-L                   || V-R
+// VI-L                  || VI-R
+
+
+d1  $ ur 2 "[I-L V-L, I-R V-R]" parts []
+
+d1  $ ur 4 "[I-L [V-L V-L] VI-L I-L, I-R [V-R V-R] ~ I-R ]" parts []
+
+d1  $ ur 2 "[I-L III-L , I3-R III-R]" parts []
+
+d1  $ ur 2 "[I-L III-L , I3-R III-R, ~ III2-L]" parts []
+
+d1  $ ur 2 "[I-L III-L , I3-R III-R, I-R III2-L]" parts [("rev", rev)]
+
+d1 $ ur 2 "[I-L III-L , I3-R III-R, I-R:rev III2-L]" parts [("rev", rev)]
+
+d1 $ ur 2 "[I-L III-L , I3-R III-R, I-R III2-L, ~ III3-L]" parts []
+
+d1 $ ur 3 "[I-L III-L II-L, I3-R III-R II-R]" parts []
+
+d1 $ ur 4 "[ I-L [V-L V-L] VI-L I-L,  I-R [V-R:rev V-R] ~ I3-R ]" parts [("rev", rev)]
+
+d1 $ qtrigger 1 $ urOnce 2 "[I-R I2-R, I-L I-L, I2-L _ , I3-R:rev I3-R]" parts [("rev", rev)] --end
+
+
+
+
+////////////
+// PART 3 //
+////////////
+
+////////////////////////
+// 3.1. SUPERCOLLIDER //
+////////////////////////
+
+(
+SynthDef(\sinte1, {
+ |out,sustain=1,freq=440,speed=1,begin=0,end=1,pan,accelerate,offset,clamp=1, phase=4, fring=400|
+ var line, env, volume, tone, outAudio;
+
+ freq=freq*speed;
+
+ line = Line.ar(begin,end,sustain/speed,doneAction: Done.freeSelf);
+ env = Env.new(levels: [0, 1, 0.9, 0], times: [0.1, 0.5, 1], curve: [-5, 0, -5]);
+ volume = IEnvGen.ar(env, line);
+
+	tone= SinOsc.ar([freq,freq+phase],0,1);
+	tone= Ringz.ar(tone,fring,SinOsc.ar(100).range(0.01,2));
+
+ outAudio = RLPF.ar(tone*volume, 20000*clamp*volume,0.3); //truco perque no fagi clicking!
+ OffsetOut.ar(out,DirtPan.ar(outAudio, ~dirt.numChannels, pan, volume));
+}).add;
+)
+
+
+
+(
+SynthDef(\sinte2, {
+ |out,sustain=1,freq=440,speed=1,begin=0,end=1,pan,accelerate,offset,clamp=1, phase=4, fring=400|
+ var line, env, volume, tone, outAudio;
+
+ freq=freq*speed;
+
+ line = Line.ar(begin,end,sustain/speed,doneAction: Done.freeSelf);
+ env = Env.new(levels: [0, 1, 0.9, 0], times: [0.1, 0.5, 1], curve: [-5, 0, -5]);
+ volume = IEnvGen.ar(env, line);
+
+	tone= Saw.ar([freq, freq+3],1);
+	//tone= LPF.ar(tone,1000);
+
+ outAudio = RLPF.ar(tone*volume, 20000*clamp*volume,0.3); //truco perque no fagi clicking!
+ OffsetOut.ar(out,DirtPan.ar(outAudio, ~dirt.numChannels, pan, volume));
+}).add;
+)
+
+
+
+////////////////
+// 3.2. TIDAL //
+////////////////
+
+setcps (60/60/4)
+
+///////////////////
+// 3.2.1. MELODY //
+///////////////////
+-- D7
+
+xfadeIn 7 2 $ trigger 0 $ n " 8 <10 10 15> 3 <8 [8 7]>" |+| (-12) # s "sinte1"
+  # pF "phase" (slow 4 $ range 0.1 4 (sine))
+  # pF "fring" "<400 400 400 500>"  -- 500 > 600
+  # attack 1 # hold 1 # release 1 #legato 1.5
+  # gain 0.4 #orbit 7
+
+d7 $ trigger 0 $ n " 8 <10 10 15> 3 <8 [8 7]>" |+| (-12) # s "sinte1"
+  # pF "phase" (slow 4 $ range 0.1 4 (sine))
+  # pF "fring" "<400 400 400 500>"  -- 500 > 600 > 300
+  # attack 1 # hold 1 # release 1 #legato 1.5
+  # gain 0.4 #orbit 7
+
+-- D8
+
+xfadeIn 8 4 $ fast 2 $ n (" 8 _ 3 <8 7> " |-| 12 ) # s "sinte2"
+  # attack 0.01 # hold 0.01 #release 0.04
+  # room 1 # sz 0.4
+  -- # delay "<0.1 0.5 1>"  # delaytime "< 0.01 0.1 1 2>" # orbit 3 --no aporta res si no es modula el delaytime lent...
+  # gain 0.8 # orbit 8
+  -- # crush ((irand 8)+2)
+
+d8  silence
+
+d8 $ fast 2 $ n (" 8 _ 3 <8 7> " |-| 12) # s "sinte2"
+    # attack 0.0133 # hold 0.01 #release 0.04
+    # room 1 # sz 0.4
+    -- # delay "<0.1 0.5 1>"  # delaytime "< 0.01 0.1 1 2>" # orbit 3 --no aporta res si no es modula el delaytime lent...
+    # gain 0.8 # orbit 8
+    -- # crush ((irand 8)+2)
+
+
+-- D9
+
+xfadeIn 9 1 $ sometimes rev $ fast 2 $ n (" 7 3 <8 3>" |-| 12 ) # s "sinte2"
+    # attack 0.01 # hold 0.01 #release 0.2
+    # room 0 # sz 0.4
+    # gain 0.8 # orbit 9
+
+d9 $ sometimes rev $ fast 2 $ n ("7 3 <8 3>" |-| 12 ) # s "sinte2" --("<0 5 0 12 >")
+    # attack 0.01 # hold 0.01 #release 0.2
+    # room 0 # sz 0.4
+    # gain 0.8 # orbit 9
+
+do
+  xfadeIn 1 2 $ struct ("0000 1000 0000 1000") $ s "sd" #djf "0.5 0.75" # orbit 1
+  xfadeIn 2 2 $ struct ("1000 0010 0010 0010") $ s "bd" # pan 0.6
+  xfadeIn 3 2 $ struct ("1010 1010 1010 1010") $ s "hh" # pan 0.4
+
+
+//////////////////////
+// 3.2.2. PERCUSION //
+//////////////////////
+
+-- 1 FIXE
+
+d1 $ struct ("0000 1000 0000 1000") $ s "sd"
+
+d1 silence
+
+
+-- 2 MES VARIABLE
+
+d2 $ struct ("1000 0010 0010 0010") $ s "bd"
+
+d2 $ struct ("1000 00[1|111|0]0 00[1?]0 0010") $ s "bd" # djf rand # pan rand
+
+d2 $ struct ("1*32") $ s "bd" # djf rand # pan rand
+
+-- d2 $ struct ("1000 0010 00<01>0 0<01>00") $ s "bd" # vowel "< a e u >"
+
+d2 $ struct ("1000 0010 00<01>0 0<01>00") $ s "bd"
+
+d2 $ struct ("1000 0010 0001 0<01>00") $ s "bd"
+
+d2 $ struct ("1000 0010 0010 0100") $ s "bd"
+
+d2 silence
+
+
+-- 3 COMPLETAMENT RAND
+
+d3 $ struct ("1010 1010 1010 1010") $ s "hh" # pan 0.3
+
+d3 $ struct ("1010 1011 1010 1110") $ s "hh" # pan 0.3
+
+d3 $ struct ("1010 10[1 1]1 10[111]0 1110") $ s "hh" # pan 0.3
+
+d3 $ struct ("10<1 [1111]>0 <[111] 1>0[11][1?] 10[1?]0 <1 [111] 1>010") $ s "hh" # pan 0.3
+
+d3 $ degradeBy 0.8 $ struct ("10<1 [1111]>0 <[111] 1>0[11][1?] 10[1?]0 <1 [111] 1>010") $ s "hh" # pan 0.3
+
+d3 $ struct ("0000 10[11]1 00000 0000") $ s "hh" # pan 0.3
+
+d3 $ sometimes (fast 4) $ struct ("1[11]1[11]") $ s "hh" # pan (rand)
+
+d3 silence
+
+
+
+---WEIRD 1
+do
+  d1 $ struct ("[ 0000 1000 0000 1000 | 0000 [1?0.3]000 0000 1001 ]") $ s "sd"
+  d2 $ struct ("[ 1000 0010 0001 1010 | 10[11]1 1110 0000 10[111]0 | 0 ]") $ s "bd"
+  d3 $ degradeBy "< 0.9 0.8 0.5 0.9>" $ struct ("1011 1011 1011 1011") $ s "hc"
+
+--WEIRD 2
+do
+  d1 $ struct ("0000 1000 0000 1000") $ s "sd"
+  d2 $ iter "< 1 1 2 0 2>"  $ struct ("1000 0010 00<01>0 00<01>0") $ s "bd" --iter sona be amb 0 1 2 (mes es descuadra)
+  d3 $ sometimes (#hpf 1000) $ struct ("1111 0010 0000 0000") $ s "ho"
+  -- d4 $ degradeBy "<0.5 0.2 [0.8 0.01]>" $ n (struct "1010 10<10>0 1010 1010" $ irand 12 ) # s "808cy" # legato "< 1 0.25 0.5 1.25>" # djf 0.43
+
+
+-- BACK TO normal
+do
+  d1 $ struct ("0000 1000 0000 1000") $ s "sd" #djf 0.75
+  d2 $ struct ("1000 0010 0010 0010") $ s "bd"
+  d3 $ struct ("1010 1010 1010 1010") $ s "hh" # pan 0.3
+  d4 silence
+
+
+-- silence
+do
+  d2 silence
+  d3 silence
+  d4 silence
+
+d1 silence
+
+
+--fin
+do
+  xfadeIn 7 3 $ "~"
+  xfadeIn 8 2 $ "~"
+  xfadeIn 9 2 $ "~"
+  
+// Special thanks to Ivan, Lina and Roger for the mentoring and guidance throug the live coding utopy and to the toplap comunity for making all this possible!
