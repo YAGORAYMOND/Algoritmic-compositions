@@ -167,5 +167,9 @@ drums2 > source snare2 loop 5
 drums3 > source hat loop 5 delay 1 dfb .9 dt 300 600 900
 
 
+////////
+//PART 5
+////////
+
 
 
