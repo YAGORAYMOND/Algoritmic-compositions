@@ -35,3 +35,82 @@ buz3 > source buzz loop 2.5
 //PART 2
 ////////
 
+//play: This part is played a lot by improvisation and each time sounds different, the idea is to tweak parameters in the synth,
+//  overlay or coment efects and change at each bar the rythm
+
+//BOOMBAP
+drloop > source boombap_20s loop 10 len 10
+  pitch 0 // 12 -12
+  lpf 200
+  //delay .6 dt 25 1000 50 500
+  lpf 800 9000 lpf_glide 2
+  delay .4 dt 300
+  //delay 1 dt 50 500 250  dt_glide .5 dfb .6 //posar 0
+  //reverb .1 .2 .3 .4 .5 .6 .7 .8 .9 rotate 3 size .8
+  gain 0.5
+
+
+////////
+//PART 3
+////////
+
+//play: starts with notes of only "t" always played with p as with w the dfb is too strong.
+//  also creates textures with no rythm (Aside from the one of dt). 
+//  Increase the shimmer with only "t"sounding, just to add detune richness. Then back to normal.
+//  Then add fiew notes of "t1".
+//  Then play with changing pitch on "t1" and adding scatter
+//  Keep it for a while with "t" and "t1" and when is fading out and with a homogeneous texture start with a single p on "t3"
+//  Then add more of "t3". Merge a bit with "t" and "t1". Then once "t" and "t1" have faded out you can start playing too with "t4".
+//  Usually then I write a single event of "t3" and keep adding sporading p on "t3" and sporadic too of "t4".
+//  I wait till a good ending note appears on "t3" to ctrl . all.
+
+
+// 2 pianos and delays (//es toca amb “p”)
+
+t > source piano loop 8
+  pitch 0 5 12 17 24 rotate 1
+  shimmer 0.08 //max 0.5
+  reverb 0.85
+  delay 0.5 dt 180 dfb 0.4
+  delay 1 dt dt 1000 995 1003 998 dfb 0.98 dt_glide 2
+  gain 2
+
+t1 > source piano loop 8
+  pitch 7 12 19 14 7 rotate 1
+  //pitch 7 14 19 12 2 rotate 1
+  //scatter 1
+  reverb 0.9
+  delay 0.5 dt 180 dfb 0.4
+  delay 1 dt 1500 1498 dfb 0.98 dt_glide 2
+  lpf 600
+  gain 3
+
+
+
+// X2 delay curt mes un de llarg
+
+t3 > source piano loop 4 len 0.2
+  pitch 0 5 12 19 rotate 1
+  //pitch 0 4 7 12 rotate 1
+  delay 1 dt 150 dfb 0.95
+  lpf 800
+  delay 1 dt 153 dfb 0.92
+  reverb .8 size .9 predelay 20
+  delay .4 dt 700 1100 900 dfb .55
+
+//spacetrip 
+
+t4 > source piano loop 4 len 0.2 gain 0.5
+  pitch 0 7 12 19 rotate -1
+  delay 1 dt 150 152 149 153 dfb 0.99 dt_glide 2
+  reverb .8 size .9 predelay 400
+  delay .3 dt 700 1100 900 dfb .5
+  gain 2
+
+
+
+
+
+
+
+
