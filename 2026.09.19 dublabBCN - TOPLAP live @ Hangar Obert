@@ -1,0 +1,37 @@
+////////
+//PART 1
+////////
+
+//play: start wt pad 1 (change shimmer) then add pad 2. I add first instances with p, at some point i add them with w to create rythm and keep adding with p from time to time.
+//  Then I add buz, buz2 and buz3. I add them overaid with w on 1 instance when pads are at max and then let pads die.
+//  Then paly wit pitches and keep adding instances of all, but specially buz2 till saturation of sound.
+
+//PADS
+pad > source zen loop 15 
+  pitch 0 5 8 3 12 rotate 1 
+  delay 1 gain .8 
+  reverb 1
+  shimmer .2 //max .8
+  delay 1 dt 1000 dfb 0.8
+
+pad2 > source zen loop 15 
+  pitch 0 12 48 24 
+  delay 1 dt 50 1000 100 
+  reverb 1
+
+//BUZZ
+buz > source buzz loop 5
+  pitch -12 len 2 delay 1 shimmer .1 .2 .4 .6
+
+buz2 > source buzz loop 2.5
+  pitch 0 len 1 delay 1 dt 100 200
+
+buz3 > source buzz loop 2.5
+  pitch 31 48 12 12 31 48 rotate 1
+  len .2 delay 1 dt 100
+
+
+////////
+//PART 2
+////////
+
