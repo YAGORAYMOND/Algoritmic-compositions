@@ -108,8 +108,63 @@ t4 > source piano loop 4 len 0.2 gain 0.5
   gain 2
 
 
+////////
+//PART 4
+////////
+
+//play: Starts with p on "guit" when you feel it. Also "alt" eventually.
+//  Then at some point you add a w on "guit" and keep with p on "alt"
+//  Then you add add w on alt, on each llop you add incrementally and exponentially. And you also trigger "noise" a few times (5 max)
+//  Till you have a ton of events on alt, then you play with changing pitches on alt (you could have done this before also).
+//  You can also erase some zones of the "alt" events with e and also add reverb 1 to turn it a texture
+//  When you have enough you gradually kill all "alt"s and "guit" and keep "noise".
+//  "Noise" serves as a texture for the comming drums.
+//  Based on the "noise" rythm you set a "drums" (kick) stable pattern, no more han 2-3 events
+//  Then you add "drums2" (snare) filling the gaps and with some regions a single event others with 2 or 3 more
+//  Then add "drums3" a single event (w) wherever you want.
+//  Then you can uncoment the delay and lpf on "drums2" and play to add more with p if you want from time to time.
+//  Also ad 0 in dt and play with dt_glide to obtain Doplers, or/and use reverb.
+//  Then add also delay to "drums".
+//  Keep playing with delay params (wet, dr etc) and removing completely comenting alteratley
+//  Kill "drums2" gradually, then "drums" finally "drums3".
+
+//Textures delays
+
+guit > source guitar loop 2 
+  pitch 0 
+  delay 1 dt 300 305
+  delay 1 dt 1000 800
+  delay 1 dt 800 500 700
+  reverb .5 size 0.9
 
 
+alt > source pip loop 8 
+  pitch 12
+  delay 1 dt 300 305
+  delay 1 dt 1000 800
+  delay 1 dt 800 500 700
+  reverb .5 size 0.9
+
+noise > source pink len .1 loop 2 
+  lpf 800
+  pitch 0
+  delay 1 dt 300 305
+  delay 1 dt 1000 800
+  delay 1 dt 800 500 700
+
+//dRUMs
+
+drums > source kick loop 5
+  lpf 800 1000 800 1500
+  //delay 0.3 dt 100 300 200 dt_glide 0.1 2
+
+drums2 > source snare2 loop 5 
+  pitch 0 12 5 -12 rotate 1
+  //lpf 400 500 300 400
+  //delay 0.5 dt 100 300 200 dt_glide 0.1 2
+  //reverb 1
+
+drums3 > source hat loop 5 delay 1 dfb .9 dt 300 600 900
 
 
 
