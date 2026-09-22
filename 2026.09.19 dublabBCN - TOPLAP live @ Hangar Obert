@@ -138,7 +138,6 @@ guit > source guitar loop 2
   delay 1 dt 800 500 700
   reverb .5 size 0.9
 
-
 alt > source pip loop 8 
   pitch 12
   delay 1 dt 300 305
