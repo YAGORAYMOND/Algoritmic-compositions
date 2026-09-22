@@ -2,7 +2,8 @@
 //PART 1
 ////////
 
-//play: start wt pad 1 (change shimmer) then add pad 2. I add first instances with p, at some point i add them with w to create rythm and keep adding with p from time to time.
+//play: start wt pad 1 (change shimmer) then add pad 2. I add first instances with p, at some point i add them 
+//  with w to create rythm and keep adding with p from time to time.
 //  Then I add buz, buz2 and buz3. I add them overaid with w on 1 instance when pads are at max and then let pads die.
 //  Then paly wit pitches and keep adding instances of all, but specially buz2 till saturation of sound.
 
@@ -170,6 +171,56 @@ drums3 > source hat loop 5 delay 1 dfb .9 dt 300 600 900
 ////////
 //PART 5
 ////////
+
+//play: Aqui la cosa es la melodia, no cambio res mes (apart dels triggers). Comencem amb events amb
+//   p de nomes "s". Anem tocant com entre 1 i 3 elements per barra, quan ens sona be toquem amb w.
+//   Deixem 3 elements per barra. Entre mig podem tocar amb p algun cop "s2" o "s3". Despres un cop ja
+//   "s" esta cremadet, afegim elements de "s2" i "s3". Normalment uns es queden distribuits cap a l'esquerra
+//   i l'altre cap a la dreta de la barra. Llavors jugo a transicionar cap a la 2a melodia i tornar a la 1a.
+//   I llavors anar a la 2a i a la 3a. I tornar a la 1a.
+
+//3 sintes del monologue i chord progression
+
+s > source supersaw loop 4 len .1 .2 .3 .4 .5 .6 rotate 0
+ pitch 24 3 5 8 12 0 3 5 8 24 0 3 9 7 0 3 5 8 0 0 5 3 5 8 12 //rotate 1
+ //pitch 9 17 12 19 21
+ //pitch 29 31 28 31 19
+ reverb 0.8 size 0.6
+
+s2 > source cof_bass loop 4 len .1 .2 .3 .4 .5 .6 rotate 1
+ pitch 48 41 45 41 12 rotate 1 
+ //pitch 41 43 45 40 5  
+ //pitch 41 43 40 43 31
+ reverb 0.8 size 0.6
+ delay .6 dt 500
+
+s3 > source supersaw loop 4 len .1 .2 .3 .4 .5 .6 rotate 1
+ pitch 48 41 45 41 12 rotate 1 
+ //pitch 48 43 45 41 12  
+ //pitch 45 47 43 47 35
+ reverb 0.8 size 1
+ delay .6 dt 500
+
+
+////////
+//PART 6
+////////
+
+//play: Poso uns 3 elements per barra. Llavors, vaig jugant a canviar pitch (molt poc harmonic a vegada
+//   nomes evitant dissonancies de numeros consecutius e.g. 0>3>5>3>7>12>5 o 0>4>9>6>0 etc). Apart afegir reverb
+//   de tant en tant per diluir tot en una textura i tornar a dry!
+
+//atmosfera degradada
+
+noisee > source field_c len .6 loop 4 
+pitch 0 //jugar
+delay 1 dt 300 305
+delay 1 dt 1000 800
+delay 1 dt 800 500 700
+gain 1
+//reverb 1 size 1
+//reverb 1 size 1
+
 
 
 
