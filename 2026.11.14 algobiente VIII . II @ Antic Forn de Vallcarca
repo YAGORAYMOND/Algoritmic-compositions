@@ -1,0 +1,157 @@
+// This code is the one used in Algobiente nov-2026 and is designed for playing it in multichannel with 8 channels.
+
+channels 8
+
+repo "https://raw.githubusercontent.com/YAGORAYMOND/samples/main"
+import accordion_e_guitar_c "n_synth/accordion_e_guitar_c.wav"
+import bass_chorous_guitar_c "n_synth/bass_chorous_guitar_c.wav"
+import flute_wurly_f "n_synth/flute_wurly_f.wav"
+import guitar_cow_f "n_synth/guitar_cow_f.wav"
+import harp_clarinet_c "n_synth/harp_clarinet_c.wav"
+import marimba_flute_f "n_synth/marimba_flute_f.wav"
+import marimba_panflute_c "n_synth/marimba_panflute_c.wav"
+import nsynth_combo "n_synth/nsynth_combo.wav"
+import organ_e_guitar_c "n_synth/organ_e_guitar_c#a#.wav"
+import p_guitar_r_violin_f "n_synth/p_guitar_r_violin_f.wav"
+import picolo_octave_synth_c "n_synth/picolo_octave_synth_c.wav”
+import sitar_fsynth_c "n_synth/sitar_fsynth_c.wav"
+import sitar_goose_c "n_synth/sitar_goose_c.wav"
+import trombone_octave_synth_c "n_synth/trombone_octave_synth_c.wav"
+import violin_e_guitar_f "n_synth/violin_e_guitar_f.wav"
+import crackle "noise/rain_crackle.wav"
+import juju1 "perc/juju_stick/juju_stick_6.wav"
+import juju2 "perc/juju_stick/juju_stick_7.wav"
+import juju3 "perc/juju_stick/juju_stick_8.wav"
+import juju4 "perc/juju_stick/juju_stick_1.wav"
+
+
+// #1: comences molt baix i amb un sol sinte, a pitch -36 (o inclus -48).  Despres afegeixes un segon sinte igual al que li poses pitch de -12, i varies manualment a -7 o -9  etc. Sona un per barra. Un altre rescurs es cambiar de sample de marimba_pan a sitar_fsynth o a guitar_cow per una barra.
+low > source marimba_panflute_c loop 8 //sitar_fsynth_c /guitar_cow_f
+ch 8 7 6 5 4 3 2 1  ch_glide 2 
+pitch -36
+delay 1 dt 100 10 400 
+gain 0.4
+
+low_2 > source marimba_panflute_c loop 8 //sitar_fsynth_c /guitar_cow_f
+ch 1 2 3 4 5 6 7 8 ch_glide 2 
+pitch -36
+delay 1 dt 400 600 200 dt_glide 0.4
+gain 0.4
+
+// Un cop porta una estona sonant low_1 i low_2, afegeixes low 3 que te molts mes aguts etc. I el deixes sonar tmb per una estona, es menja els altres dos pq satura els aguts..
+low_3 > source sitar_fsynth_c loop 8 //sitar_fsynth_c /guitar_cow_f
+ch 1 2 3 4 5 6 7 8 ch_glide 2 
+pitch 0 // pitch 5 12 7 rotate 1
+delay 1 dt 400 600 200 dt_glide 0.4
+gain 0.4
+
+//#2 Crackle layer: En el moment algit afegeixes aquesta textura de fons. Ja es quedará tot el set de fons, per no tenir silencis. Es fica un sol instance per barra q va repetint.
+cr > source crackle loop 10
+ch (1 2 3 4 5 6 7 8)
+len 11
+
+
+
+////#3 DRUMS: Per sobre la melodia, he posat aquests drums, brillen molt amb so espacialitzat pero amb estereo crec que sin mas realment… 
+drums > source hat loop 4 
+ch 1 2 3 4 5 6 7 8 rotate 2 ch_glide 0.1 
+delay 1 dt 200 10 100 rotate 1
+delay 0.5 dt 130
+pitch -5
+gain 1
+
+
+////#4 SOROLLETS 
+//sorollets
+high > source violin_e_guitar_f loop 8  //anar pujant len i pitch uniforme a -12
+ch 1 2 3 4 5 6 7 8 ch_glide 2
+begin 1 1.3 1.5 2 0.7 rotate 1 len .2
+pitch 24 12 19 rotate -1 // canvies el pitch central de 12 a -12, despres pots acabar amb algo como aixo “pitch -24 -12 -12 rotate -1”
+lpf 10000
+gain 0.8
+delay 0.5 dt 250
+delay 0.5 dt 248 250 252
+delay 1 dt 1000  950 1150 dt_glide 0.1 dfb .8
+
+
+
+////#5 Jugar a tenir varios acco, overlaid, copy paste i anar afegint-ne, modificar synth etc.
+acco > source bass_chorous_guitar_c loop 16  //bass_chorous_guitar_c //accordion_e_guitar_c 
+ch (2 3 4 5) (6 7 8 1) rotate 1 ch_glide 2
+pitch 0 -5 rotate 1
+delay .5 dt 1000 dfb 0.88
+lpf 500 300 10000 lpf_glide 1
+
+// a sobre acco
+mr > source sitar_fsynth_c loop 8 
+ch 1 2 3 4 5 6 7 8 rotate 1 ch_glide 2
+pitch -24 12 0 -24 48 rotate 1 len 0.1
+delay 0.3 dt 250 1000 500
+gain 1
+
+
+
+////#6 perc: Sincerament no m’agrada gens, la idea era tenir molts sorollets junts i per diferents canals pero no m’acaba ni en multicanal…
+juju1 > source juju1 loop 4 
+ch 1 2 3 4 5 6 7 8 rotate 0 ch_glide 0.1 
+pitch 10 12 rotate 1
+delay 1 dt 500
+gain 1
+
+juju2 > source juju2 loop 3 
+ch 1 2 3 4 5 6 7 8 rotate 2 ch_glide 0.1 
+ch_glide 0.1
+delay 1 dt 200 1000 rotate 1
+delay 0.5 dt 130
+pitch -5
+gain 1
+
+juju3 > source juju3 loop 4 
+ch 1 2 3 4 5 6 7 8 rotate -1 ch_glide 0.1 
+ch_glide 0.1
+delay 1 dt 200 1000
+delay 0.5 dt 130
+pitch -5
+gain 1
+
+juju4 > source juju4 loop 3
+ch 1 2 3 4 5 6 7 8 rotate 1 ch_glide 0.1 
+ch_glide 0.1
+delay 1 dt 1500
+delay 0.5 dt 130
+pitch -5
+gain 1
+
+//Aquesta percusió encanvi esta guapa… potser es pot reaprofitar
+drums2 > source hat loop 4 
+ch 1 2 3 4 5 6 7 8  rotate 2 ch_glide 0.1 
+ch_glide 0.1
+delay 1 dt 200 10
+delay 0.5 dt 130
+pitch -5
+gain 1
+
+
+//#7 combo: Aquí es toca primer una barra a pitch -12, despres una altra a -5, depres es copia tot i es va duplicant i cambiant smple etc.
+combo > source nsynth_combo loop 8 //sitar_fsynth_c /guitar_cow_f/nsynth_combo 
+ch 8 7 6 5 4 3 2 1 ch_glide 2 
+pitch -12 //-5
+gain 0.4
+
+//combinar amb: organ_e_guitar_c o amb  trombone_octave_synth_c
+
+//OBS: S’ha de dir que al live improvitzant vaig començar a jugar a afegir molts delays i jugar a arribar al limit de bufer amb dt molt baixos de cop i dfb molt alts per accentuar de vegades, i tornats al valor inicial despres. En definitva es algo que si m’agrada, i que potser voldria gravar algun dia:
+
+////#7 combo (live)
+combo > source nsynth_combo loop 8 //sitar_fsynth_c /guitar_cow_f/nsynth_combo 
+ch 8 7 6 5 4 3 2 1 ch_glide 2 
+pitch -5//-5
+gain 0.4
+
+combo2 > source sitar_fsynth_c loop 8 //sitar_fsynth_c /guitar_cow_f/nsynth_combo 
+ch 8 7 6 5 4 3 2 1 ch_glide 2 
+pitch 0 12 7 3 24//-5
+delay 1 dt 1000
+delay 0.6 dt 1500 10 100 dfb 0.99
+gain 0.4
+
