@@ -1,5 +1,5 @@
 // This code is the one used in Algobiente nov-2026 and is designed for playing it in multichannel with 8 channels.
-
+// Was written and played with N-ary_v5.3.17.html
 channels 8
 
 repo "https://raw.githubusercontent.com/YAGORAYMOND/samples/main"
